@@ -2,14 +2,18 @@ import express from "express";
 import db from "./db.js";
 import cors from "cors";
 import fcm from "firebase-admin";
-import serviceAccount from "./fcm_test_token.json" assert { type: "json" };
+import { readFileSync } from "fs";
+
+const serviceAccount = JSON.parse(readFileSync("./fcm_test_token.json", "utf8"));
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
 fcm.initializeApp({
   credential: fcm.credential.cert(serviceAccount),
 });
+
 
 app.post("/save-token", async (req, res) => {
   const { name, fcm_device_token } = req.body;
@@ -38,8 +42,8 @@ app.get("/send-notification/:id", async (req, res) => {
 
     const message = {
       notification: {
-        title: "KONTOL ASU",
-        body: "Ini notif Tod",
+        title: "Test Notif",
+        body: "Notification Body",
       },
       token: user.fcm_device_token,
     };
@@ -85,6 +89,37 @@ app.get("/all-data", async (req, res) => {
   } catch (error) {
     console.error("error get all");
     res.status(500).send(error);
+  }
+});
+
+app.post("/send-notification", async (req, res) => {
+  try {
+    const { token, title, body, data } = req.body;
+
+    if (!token) return res.status(400).json({ error: "Missing 'token'" });
+    if (!title) return res.status(400).json({ error: "Missing 'title'" });
+    if (!body) return res.status(400).json({ error: "Missing 'body'" });
+
+    const message = {
+      notification: { title, body },
+      token,
+      ...(data ? { data } : {}),
+    };
+
+    const response = await fcm.messaging().send(message);
+    console.log("Notification sent:", response);
+
+    res.json({
+      success: true,
+      message: "Notification sent successfully",
+      response,
+    });
+  } catch (error) {
+    console.error("Error sending notification:", error);
+    res.status(500).json({
+      error: "Failed to send notification",
+      detail: error.message,
+    });
   }
 });
 

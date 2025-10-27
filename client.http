@@ -1,0 +1,32 @@
+### 1️⃣ Save Token
+POST http://localhost:5000/save-token
+Content-Type: application/json
+
+{
+  "name": "User Satu",
+  "fcm_device_token": "YOUR_FCM_DEVICE_TOKEN_HERE"
+}
+
+### 2️⃣ Get All Tokens
+GET http://localhost:5000/all-data
+
+### 3️⃣ Send Notification by ID
+GET http://localhost:5000/send-notification/1
+
+### 4️⃣ Send Custom Notification
+POST http://localhost:5000/send-notification
+Content-Type: application/json
+
+{
+  "token": "YOUR_FCM_DEVICE_TOKEN_HERE",
+  "title": "Judul Notif",
+  "body": "Ini notifikasi custom dari API",
+  "data": {
+    "redirect": "/dashboard",
+    "type": "announcement",
+    "user_id": "12345"
+  }
+}
+
+### 5️⃣ Delete User by ID
+GET http://localhost:5000/delete-data/1
