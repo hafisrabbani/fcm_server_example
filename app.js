@@ -3,10 +3,11 @@ import db from "./db.js";
 import cors from "cors";
 import fcm from "firebase-admin";
 import { readFileSync } from "fs";
-
+import morgan from "morgan";
 const serviceAccount = JSON.parse(readFileSync("./fcm_test_token.json", "utf8"));
 
 const app = express();
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
 
