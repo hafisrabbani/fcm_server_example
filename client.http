@@ -21,6 +21,9 @@ Content-Type: application/json
   "token": "YOUR_FCM_DEVICE_TOKEN_HERE",
   "title": "Judul Notif",
   "body": "Ini notifikasi custom dari API",
+  "android": {
+    "priority": "high"
+  },
   "data": {
     "redirect": "/dashboard",
     "type": "announcement",
